@@ -1,0 +1,706 @@
+                                                Function:
+
+def is executable code:
+    def is an executable statement.
+        your function does not exist until python reaches and runs the def.in typical
+        operation,def statements are coded in module files and are naturally run to generate functions when the module
+        file reside in its first imported
+
+    def creates an object and assigns it to a new name.
+        when python reaches and runs a def statement,it generates a new function object and assign it to the function's
+        name,the function name becomes a reference to the function object.
+
+    global declares module-level variables that are to be assigned.this variable is assigned outside all defs.
+
+    nonlocal declares enclosing function variables that to be assigned.nonlocal declaration not allowed at module level
+    only inside a function
+
+all we have in python is runtime,there is no such thing as a separate compile time.
+
+polymorphism means that the meaning of an operation depends on the objects being operated upon,because it's a dynamically typed
+language,polymorphism runs rampant in python.In fact,every operation is a polymorphism operation in python
+
+__main__:
+    When the Python interpreter reads a source file, it executes all of the code found in it.
+    Before executing the code, it will define a few special variables.if the python interpreter is running that module
+    (the source file) as the main program, it sets the special __name__ variable to have a value "__main__".
+    If this file is being imported from another module,__name__ will be set to the module's name.
+    if a module is being run directly,then __name__ instead is set to the string "__main__",
+
+the enclosing module is a global scope:
+    Each module is a global scope—that is, a namespace in which variables created (assigned) at the top level of the module
+    file live.Global variables become attributes of a module object to the outside world after imports
+
+the built-in scope is a built-in module called builtins
+
+
+if a lambda or def defined within a function is nested inside a loop, and the nested function references an enclosing
+scope variable that is changed by that loop, all functions generated within the loop will have the same value
+def makeAction():
+    acts = []
+    for i in range(5):
+        acts.append(lambda x : i**x)
+    return acts
+
+
+Changing a mutable object argument in a function may impact the caller.
+Immutable arguments are effectively passed “by value.”
+Mutable arguments are effectively passed “by pointer.”,when arguments are passed mutable objects like lists and dictionaries
+we also need to to be aware that in place changes to such objects may live on after a functions exists.
+
+use a * character by itself in the arguments list to indicate that a function does not accept a variable-length argument
+list but still expects all arguments following the * to be passed as keywords.
+
+keyword-only arguments must be specified after a single star, not two named arguments cannot appear after the **args arbitrary keywords form,
+and a ** can’t appear by itself in the arguments list.
+
+def func(a: 'spam', b: (1, 10), c: float) -> int:
+    return a + b + c
+func.__annotations__:
+    {'c': <class 'float'>, 'b': (1, 10), 'a': 'spam', 'return': <class 'int'>}
+
+f = lambda x, y, z: x + y + z
+f(2,3,4)
+
+List Comprehensions
+List comprehensions collect the results of applying an arbitrary expression to an iterable
+of values and return them in a new list.
+[x ** 2 for x in range(10)]
+[x for x in range(5) if x % 2 == 0]
+[x + y for x in [0, 1, 2] for y in [100, 200, 300]]
+[x + y for x in 'spam' if x in 'sm' for y in 'SPAM' if y in ('P', 'A')]
+
+
+
+Generator functions (available since 2.3) are coded as normal def statements, but
+use yield statements to return results one at a time, suspending and resuming their
+state between each.
+Generator expressions (available since 2.4) are similar to the list comprehensions
+of the prior section, but they return an object that produces results on demand
+instead of building a result list.
+Because neither constructs a result list all at once, they save memory space and allow
+computation time to be split across result requests.
+
+Generator functions are like normal functions in most respects, and in fact are coded
+with normal def statements. However, when created, they are compiled specially into
+an object that supports the iteration protocol. And when called, they don’t return a
+result: they return a result generator that can appear in any iteration context.
+Unlike normal functions that return a value and exit, generator functions automatically
+suspend and resume their execution and state around the point of value generation.
+
+The chief code difference between generator and normal functions is that a generator
+yields a value, rather than returning one—the yield statement suspends the function
+and sends a value back to the caller, but retains enough state to enable the function to
+resume from where it left off. When resumed, the function continues execution im-
+mediately after the last yield run. From the function’s perspective, this allows its code
+to produce a series of values over time, rather than computing them all at once and
+sending them back in something like a list.
+
+To support this iteration protocol, functions containing a yield statement are compiled specially
+as generators—they are not normal functions, but rather are built to return an object
+with the expected iteration protocol methods.
+
+def gensquares(N):
+    for i in range(N):
+        yield i ** 2
+
+
+generators can be better in terms of both memory use and performance in
+larger programs. They allow functions to avoid doing all the work up front, which is
+especially useful when the result lists are large or when it takes a lot of computation to
+produce each value. Generators distribute the time required to produce the series of
+values among loop iterations.
+Moreover, for more advanced uses, generators can provide a simpler alternative to
+manually saving the state between iterations in class objects—with generators, vari-
+ables accessible in the function’s scopes are saved and restored automatically
+
+
+generator expressions. Syntactically, gen-
+erator expressions are just like normal list comprehensions, and support all their syntax
+—including if filters and loop nesting—but they are enclosed in parentheses instead
+of square brackets (like tuples, their enclosing parentheses are often optional):
+(x ** 2 for x in range(4))
+<generator object <genexpr> at 0x00000000029A8288>
+, they divide the work of results production into smaller time slices
+
+
+                                                 module and package
+Python module—the highest-level program
+organization unit, which packages program code and data for reuse, and provides self-
+contained namespaces that minimize variable name clashes across your programs.
+
+To satisfy such goals, import (and, as you’ll see later, from ) statements execute and load
+other files on request. More formally, in Python, cross-file module linking is not re-
+solved until such import statements are executed at runtime; their net effect is to assign
+module names—simple variables like b —to loaded module objects. In fact, the module
+name used in an import statement serves two purposes: it identifies the external file to
+be loaded, but it also becomes a variable assigned to the loaded module.
+
+Similarly, objects defined by a module are also created at runtime, as the import is
+executing: import literally runs statements in the target file one at a time to create its
+contents. Along the way, every name assigned at the top-level of the file becomes an
+attribute of the module, accessible to importers
+
+in Python, imports are not just textual insertions
+of one file into another. They are really runtime operations that perform three distinct
+1. Find the module’s file.
+2. Compile it to byte code (if needed).
+3. Run the module’s code to build the objects it defines.
+all three of these steps are carried out only the first time a module is imported
+during a program’s execution; later imports of the same module in a program run
+bypass all of these steps and simply fetch the already loaded module object in memory.
+
+Notice that compilation happens when a file is being imported. Because of this, you
+will not usually see a .pyc byte code file for the top-level file of your program, unless it
+is also imported elsewhere—only imported files leave behind .pyc files on your ma-
+chine.
+
+The final step of an import operation executes the byte code of the module. All state-
+ments in the file are run in turn, from top to bottom, and any assignments made to
+names during this step generate attributes of the resulting module object.
+
+Module Search path:
+The home directory of the program
+PYTHONPATH directories (if set)
+Standard library directories
+The contents of any .pth files (if present),list the directory,one per line in this text file
+The site-packages home of third-party extensions
+
+like def , the import and from are implicit assignments:
+• import assigns an entire module object to a single name.
+• from assigns one or more names to objects of the same names in another module.
+
+in simple terms, modules are just namespaces (places
+where names are created), and the names that live in a module are called its attributes.
+
+every name that is assigned a value at the top level of a module
+file (i.e., not nested in a function or class body) becomes an attribute of that module.
+
+Module statements run on the first import. The first time a module is imported
+anywhere in a system, Python creates an empty module object and executes the
+statements in the module file one after another, from the top of the file to the
+bottom.
+
+Top-level assignments create module attributes. During an import, statements
+at the top level of the file not nested in a def or class that assign names (e.g., = ,
+def ) create attributes of the module object; assigned names are stored in the mod-
+ule’s namespace.
+
+In fact, internally, module namespaces are stored as dictionary objects.The names we assigned in the module file become
+dictionary keys internally,
+
+Because reload expects an object, a module must have been previously imported successfully before you can reload it:
+reload(module_name)
+
+Files named __init__.py are used to mark directories on disk as Python package directories.
+If you remove the __init__.py file, Python will no longer look for submodules inside that directory, so attempts to import the module will fail.
+The __init__.py files are required to make Python treat the directories as containing packages; this is done to prevent directories with
+a common name, such as string, from unintentionally hiding valid modules that occur later (deeper) on the module search path. In the simplest case,
+__init__.py can just be an empty file, but it can also execute initialization code for the package or set the __all__ variable
+
+If you use this feature, keep in mind that the directory paths in your import statements
+can be only variables separated by periods.
+
+each directory named within the path of a package import statement must contain a file named __init__.py, or your package imports will fail.
+
+The __init__.py files can contain Python code, just like normal module files. Their
+names are special because their code is run automatically the first time a Python program imports a directory,
+
+As an advanced feature, you can use __all__ lists in __init__.py files to define what
+is exported when a directory is imported with the from * statement form. In an
+__init__.py file, the __all__ list is taken to be the list of submodule names that
+should be automatically imported when from * is used on the package (directory)
+name. If __all__ is not set, the from * statement does not automatically load sub-
+modules nested in the directory; instead, it loads just names defined by assignments
+in the directory’s __init__.py file, including any submodules explicitly imported by
+code in this file.
+
+Imports with dots: In both Python 3.X and 2.X, you can use leading dots in from
+statements’ module names to indicate that imports should be relative-only to the
+containing package—such imports will search for modules inside the package di-
+rectory only and will not look for same-named modules located elsewhere on the
+import search path ( sys.path ). The net effect is that package modules override
+outside modules.
+
+from __future__ import absolute_import # Use 3.X relative import model in 2.X
+If present, this statement enables the Python 3.X absolute-only search path change. In
+3.X, and in 2.X when enabled, an import without a leading dot in the module name
+always causes Python to skip the relative components of the module import search path
+and look instead in the absolute directories that sys.path contains.
+
+Relative imports apply to imports within packages only.
+Relative imports apply to the from statement only.
+
+
+As a special case, you can prefix names with a single underscore (e.g., _X ) to prevent
+them from being copied out when a client imports a module’s names with a from *
+statement.
+
+
+Alternatively, you can achieve a hiding effect similar to the _X naming convention by
+assigning a list of variable name strings to the variable __all__ at the top level of the
+module. When this feature is used, the from * statement will copy out only those names
+listed in the __all__ list. In effect, this is the converse of the _X convention: __all__
+identifies names to be copied, while _X identifies names not to be copied. Python looks
+for an __all__ list in the module first and copies its names irrespective of any under-
+scores; if __all__ is not defined, from * copies all names without a single leading underscore:
+__all__ = ['name','_not_imported']
+
+
+If the file is being run as a top-level program file, __name__ is set to the string
+"__main__" when it starts.
+• If the file is being imported instead, __name__ is set to the module’s name as known
+by its clients.
+
+
+
+
+                                   OOP
+At its base, the mechanism of OOP in Python is largely just two bits of magic: a special
+first argument in functions (to receive the subject of a call) and inheritance attribute
+search (to support programming by customization).
+
+In terms of search trees, an instance inherits attributes from its class, and a class inherits
+attributes from all classes above it in the tree.
+
+subclasses may override behavior defined in their
+superclasses by redefining superclass names lower in the tree. 1
+
+
+If it’s coded or inherited, Python automatically calls a method named __init__ each
+time an instance is generated from a class. The new instance is passed in to the self
+argument of __init__ as usual
+
+there are two kinds of objects in Python’s OOP model: class objects and instance ob-
+jects. Class objects provide default behavior and serve as factories for instance objects.
+Instance objects are the real objects your programs process—each is a namespace in
+its own right, but inherits (i.e., has automatic access to) names in the class from which
+it was created.Class objects come from statements, and instances come from calls; each
+time you call a class, you get a new instance of that class.
+
+The class statement creates a class object and assigns it a name. Just like the
+function def statement, the Python class statement is an executable statement.
+When reached and run, it generates a new class object and assigns it to the name
+in the class header. Also, like def s, class statements typically run when the files
+they are coded in are first imported.
+
+Assignments inside class statements make class attributes. Just like in module
+files, top-level assignments within a class statement (not nested in a def ) generate
+attributes in a class object. Technically, the class statement defines a local scope
+that morphs into the attribute namespace of the class object, just like a module’s
+global scope. After running a class statement, class attributes are accessed by name
+qualification: object.name .
+
+Each instance object inherits class attributes and gets its own namespace.
+
+Assignments to attributes of self in methods make per-instance attributes.
+
+As with everything else in Python, there are no
+declarations for instance attributes (sometimes called members); they spring into exis-
+tence the first time they are assigned values, just like simple variables. I
+
+Although less common, we could even generate an entirely new attribute in the in-
+stance’s namespace by assigning to its name outside the class’s method functions:
+
+Classes inherit attributes from their superclasses. Just as instances inherit the
+attribute names defined in their classes, classes inherit all of the attribute names
+defined in their superclasses; Python finds them automatically when they’re ac-
+cessed, if they don’t exist in the subclasses.
+
+Instances inherit attributes from all accessible classes. Each instance gets
+names from the class it’s generated from, as well as all of that class’s superclasses.
+When looking for a name, Python checks the instance, then its class, then all su-
+perclasses.
+
+class statements are run during
+imports to define names, and these names become distinct module attributes.
+
+In simple terms, operator overloading lets objects coded with
+classes intercept and respond to operations that work on built-in types: addition, slic-
+ing, printing, qualification, and so on.
+
+
+in a class, Python looks for such names in all its superclasses, as usual. Operator over-
+loading method names are also not built-in or reserved words; they are just attributes
+that Python looks for when objects appear in various contexts. Python usually calls
+them automatically, but they may occasionally be called by your code as well.
+
+__dict__ does not include inherited
+
+instance.method(args...)
+class.method(instance, args...)
+you must remember to pass along the instance
+manually if you call through the class directly.
+
+The built-in instance.__class__ attribute provides a link from an instance to the
+class from which it was created.
+
+The built-in object.__dict__ attribute provides a dictionary with one key/value
+pair for every attribute attached to a namespace object (including modules, classes,
+and instances).
+
+methods work in exactly the same
+way as simple functions, with one crucial exception: a method’s first argument always
+receives the instance object that is the implied subject of the method call.
+
+abstract class
+class Super:
+    def delegate(self):
+        self.action()
+    def action(self):
+        assert False, 'action must be defined!' # If this version is called
+
+the
+in membership test, list comprehensions, the map built-in, list and tuple assignments,
+and type constructors will also call __getitem__ automatically,
+
+
+__setattr__ calls __setattr__ again, potentially causing an infinite recursion
+loop If you wish to use this method, you can avoid loops by coding instance attribute as-
+signments as assignments to attribute dictionary keys. That is, use
+self.__dict__['name'] = x , not self.name = x ; because you’re not assigning to
+__dict__ itself, this avoids the loop:
+
+
+class Accesscontrol:
+    def __setattr__(self, attr, value):
+        if attr == 'age':
+            self.__dict__[attr] = value + 10 # Not self.name=val or setattr,cause infinite loop
+        else:
+            raise AttributeError(attr + ' not allowed')
+
+The __getattribute__ method intercepts all attribute fetches, not just those that
+are undefined, but when using it you must be more cautious than with __get
+attr__ to avoid loops.
+
+
+you should write your code to expect only an object interface, not a specific
+data type. That way, it will be useful for a broader category of types and applications:
+class C:
+    def meth(self, x):
+        x.operation()  # Assume x does the right thing
+
+
+
+
+within a class statement only, any names that
+start with two underscores but don’t end with two underscores are automatically ex-
+panded to include the name of the enclosing class at their front. For instance, a name
+like __X within a class named Spam is changed to _Spam__X automatically: the original
+name is prefixed with a single underscore and the enclosing class’s name. Because the
+modified name contains the name of the enclosing class, it’s generally unique; it won’t
+clash with similar names created by other classes in a hierarchy.protected variable
+
+
+
+Unbound (class) method objects: no self
+Accessing a function attribute of a class by qualifying the class returns an unbound
+method object. To call the method, you must provide an instance object explicitly
+as the first argument. In Python 3.X, an unbound method is the same as a simple
+function and can be called through the class’s name; in 2.X it’s a distinct type and
+cannot be called without providing an instance.
+Bound (instance) method objects: self + function pairs
+Accessing a function attribute of a class by qualifying an instance returns a bound
+method object. Python automatically packages the instance with the function in
+the bound method object, so you don’t need to pass an instance to call the method.
+
+In Python 3.X, the language has dropped the notion of unbound methods. What we
+describe as an unbound method here is treated as a simple function in 3.X.
+
+the special __slots__ variable and
+attribute at the top level of a class statement: only those names in the __slots__ list
+can be assigned as instance attributes. However, like all names in Python, instance
+attribute names must still be assigned before they can be referenced,
+__slots__ means no __dict__ by default,__dict__ in None
+for faster attribute access and memory saving
+
+
+• In Python 3.X, all classes are automatically what were formerly called “new style,”
+whether they explicitly inherit from object or not. Coding the object superclass is
+optional and implied.
+
+• In Python 2.X, classes must explicitly inherit from object (or another built-in type)
+to be considered “new style” and enable and obtain all new-style behavior. Classes
+without this are “classic.”
+
+Classes are now types, and types are now classes. In fact, the two are essentially
+synonyms,
+>>>type(int)
+<class 'type'>
+>>>import os
+>>>type(os)
+<class 'module'>
+>>> type(10) is int
+True
+>>>isinstance('s',str)
+True
+
+
+A key difference between __getattr__ and __getattribute__ is that __getattr__ is only invoked if
+the attribute wasn't found the usual ways. It's good for implementing a fallback for missing attributes,
+and is probably the one of two you want.
+__getattribute__ is invoked before looking at the actual attributes on the object, and so can be
+tricky to implement correctly. You can end up in infinite recursions very easily.
+
+python will call __getattr__ method whenever you request an attribute that hasn't already been defined:
+
+class Count:
+    def __inti__(self,min,max):
+        self.min = min
+        self.max = max
+    def __getattr__(self,attr):   # if attrname has not been defined,enter this magic method
+        self.__dict__[attr] = 0
+        return 0
+    def __getattribute__(self,attr): # __getattribute__ is called first,the __attr__,But if  __getattribute__ raises  AttributeError exception then the exception will be ignored and __getattr__ method will be invoked
+        if attr.startswith('cur'):
+            raise AttributeError
+        return
+            Object.__getattribute__(self,attr)
+
+obj = Count(1,10)
+print(obj.notExist) # or AttributeError
+
+
+if you set __getattribute__ method in you class,python invokes the method for every attribute regardless whether
+it exists or not.
+In order to avoid infinite recursion in __getattribute__ method, its implementation should always call the base class method with the same name to access any attributes it needs.
+For example: object.__getattribute__(self, name) or  super().__getattribute__(item) and not self.__dict__[item]
+
+
+
+we need methods in a class that are not passed, and do not expect, a self instance argument.
+Python supports such goals with the notion of static methods—simple functions with
+no self argument that are nested in a class and are designed to work on class attributes
+instead of instance attributes. Static methods never receive an automatic self argument,
+whether called through a class or an instance. They usually keep track of information
+that spans all instances, rather than providing behavior for instances.
+
+
+
+try:
+    statements               # Run this main action first
+except name1:
+    statements               # Run if name1 is raised during try block
+except (name2, name3):
+    statements               # Run if any of these exceptions occur
+except name4 as var:
+    statements               # Run if name4 is raised, assign instance raised to var
+except:
+    statements               # Run for all other exceptions raised
+else:
+    statements               # Run if no exception was raised during try block
+finally:
+    statements               # Always perform this block on exit.whether an exception occurred while the try block was running or not
+
+
+To trigger exceptions explicitly, you can code raise statements. Their general form is
+simple—a raise statement consists of the word raise , optionally followed by the class
+to be raised or an instance of it:
+
+
+class Descriptor:
+    "docstring goes here"
+    def __get__(self,instance,owner_class):
+    def __set__(self,instance,value):
+    def __delete__(self,instance):
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

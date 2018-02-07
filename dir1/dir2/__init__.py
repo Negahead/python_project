@@ -1,0 +1,1 @@
+print("hello in dir2 __init__")
