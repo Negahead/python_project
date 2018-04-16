@@ -1,0 +1,83 @@
+if issubclass(arr.dtype.type, (nt.integer, nt.bool_)):
+
+if isinstance(ret, mu.ndarray):
+
+elif hasattr(ret, 'dtype'):
+
+        try:
+            self.get_warnings = config['get_warnings']
+            del config['get_warnings']
+        except KeyError:
+            pass  # Leave what was set or default
+            raise AttributeError("Converter class should be a subclass "
+                                 "of conversion.MySQLConverterBase.")
+
+msg = "Can not reconnect to MySQL after {0} "\
+                          "attempt(s): {1}".format(attempts, str(err))
+                    raise errors.InterfaceError(msg)
+
+
+
+
+levels = ['READ UNCOMMITTED', 'READ COMMITTED', 'REPEATABLE READ',
+                      'SERIALIZABLE']
+
+            if level not in levels:
+                raise ValueError(
+                    'Unknown isolation level "{0}"'.format(isolation_level))
+
+
+    def cmd_quit(self):
+        """Close the current connection with the server"""
+        raise NotImplementedError
+
+
+
+
+
+try:
+    import mysql.connector
+    from mysql.connector.conversion import MySQLConverter, MySQLConverterBase
+    from mysql.connector.catch23 import PY2
+except ImportError as err:
+    from django.core.exceptions import ImproperlyConfigured
+    raise ImproperlyConfigured(
+        "Error loading mysql.connector module: {0}".format(err))
+
+
+
+    def __repr__(self):
+        return "{class_}(load={load}, ratios={ratios})".format(
+            class_=self.__class__,
+            load=self.load,
+            ratios=self.ratios
+        )
+
+
+    if low < 0:
+        raise ValueError('low must be non-negative')
+
+
+@property
+    def unix_socket(self):
+        "MySQL Unix socket file location"
+        return self._unix_socket
+
+
+
+@abstractproperty
+    def database(self):
+        """Get the current database"""
+        pass
+
+
+        if isinstance(value, (list, tuple)):
+            value = ','.join(value)
+
+
+
+if isinstance(value, (list, tuple)):
+    value = ','.join(value)
+
+
+callable(A.greeting) // test if is a function
